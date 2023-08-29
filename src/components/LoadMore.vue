@@ -25,17 +25,14 @@ export default defineComponent({
 .load-more {
   box-sizing: border-box;
   display: flex;
-  min-width: 140px;
-  max-width: 160px;
   width: 140px;
+  height: 280px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 .plus {
-  padding-top: 24px;
   width: 24px;
   height: 24px;
   flex-shrink: 0;

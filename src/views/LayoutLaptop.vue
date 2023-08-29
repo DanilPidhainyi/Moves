@@ -2,13 +2,17 @@
 import {defineComponent} from 'vue'
 import store from "@/store";
 import CarouselSerials from "@/components/CarouselSerials.vue";
-import IconStar from "@/components/IconStar.vue";
 import {convertTime} from "@/components/covertTime";
+
+interface Name {
+  first_name: string,
+  last_name: string
+}
 
 
 export default defineComponent({
   name: "LayoutLaptop",
-  components: {IconStar, CarouselSerials},
+  components: {CarouselSerials},
   computed: {
     selectMovies () {
       return store.getters.selectMovies
@@ -23,6 +27,10 @@ export default defineComponent({
 
   methods: {
     convertTime,
+    combName (arr: Name[]) {
+      return arr.map(el => el.first_name + ' ' + el.last_name).join(', ')
+    },
+
   }
 
 
@@ -37,20 +45,22 @@ export default defineComponent({
           IBDb rating
         </div>
         <div class="mt-10 score-container">
-          <icon-star width="20px" height="20px"/>
-          <span class="score">{{ selectMovies.imdb_rating}}</span>
+          <svg class="star" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.3165 0.423147C10.3861 0.262571 10.6139 0.262571 10.6835 0.423147L13.1686 6.15401C13.1976 6.22084 13.2606 6.26663 13.3331 6.27354L19.5514 6.86608C19.7257 6.88268 19.796 7.09926 19.6648 7.2151L14.9824 11.3495C14.9278 11.3977 14.9037 11.4718 14.9196 11.5429L16.2776 17.64C16.3156 17.8108 16.1314 17.9447 15.9807 17.8557L10.6017 14.68C10.539 14.643 10.461 14.643 10.3983 14.68L5.01931 17.8557C4.8686 17.9447 4.68437 17.8108 4.72242 17.64L6.08045 11.5429C6.09628 11.4718 6.07221 11.3977 6.01761 11.3495L1.33517 7.2151C1.20397 7.09926 1.27434 6.88268 1.44857 6.86608L7.66689 6.27354C7.7394 6.26663 7.80243 6.22084 7.83141 6.15401L10.3165 0.423147Z" fill="#E98D4B"/>
+          </svg>
+          <span class="score">{{selectMovies.imdb_rating }}</span>
           <span class="ten">/10</span>
         </div>
         <div class="mt-20 title">
           <div>{{ selectMovies.title }}</div>
-          <div class="year ml-10">({{ selectMovies.release_year }})</div>
+          <div class="year">({{ selectMovies.release_year }})</div>
         </div>
         <div class="mt-20 description">
           {{ selectMovies.description }}
         </div>
         <div class="mt-20 d-flex row genres">
-          <div v-for="(genre, index) in selectMovies.genres" :key="genre.id">
-            {{ genre.title }}{{ index < selectMovies.genres.length - 1 ? ',&nbsp;' : '' }}
+          <div>
+            {{ selectMovies.genres.map(el => el.title).join(', ') }}
           </div>
           <svg class="mx-20" width="1" height="10" viewBox="0 0 1 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <line x1="0.5" y1="0.5" x2="0.5" y2="9.5" stroke="#A6A6A6" stroke-linecap="round"/>
@@ -70,22 +80,18 @@ export default defineComponent({
       </section>
       <section class="content-right">
        <div>
-          <span>Director: </span>
-          <span v-for="(director, index) in selectMovies.directors" :key="director.id" class="name">
-            {{ director.first_name + ' ' + director.last_name }}{{ index < selectMovies.directors.length - 1 ? ',&nbsp;' : '' }}
-          </span>
+         <span>Director: </span>
+         <span class="name">
+           {{ combName(selectMovies.directors) }}
+         </span>
        </div>
         <div>
           <span>Writers: </span>
-          <span v-for="(writers, index) in selectMovies.writers" :key="writers.id" class="name">
-            {{ writers.first_name + ' ' + writers.last_name }}{{ index < selectMovies.writers.length - 1 ? ',&nbsp;' : '' }}
-          </span>
+          <span class="name" style="margin-left: 4px">{{ combName(selectMovies.writers) }}</span>
         </div>
         <div>
           <span>Stars: </span>
-          <span v-for="(stars, index) in selectMovies.stars" :key="stars.id" class="name">
-            {{ stars.first_name + ' ' + stars.last_name }}{{ index < selectMovies.stars.length - 1 ? ',&nbsp;' : '' }}
-          </span>
+          <span class="name">{{ combName(selectMovies.stars) }}</span>
         </div>
       </section>
     </div>
@@ -111,22 +117,24 @@ p {
   width: 320px;
   font-size: 16px;
   font-style: normal;
-  margin-bottom: 62px;
+  margin-bottom: 60px;
 }
-
 
 .content-right span {
   color: var(--grey, #E2E2E2);
   font-family: Rubik,serif;
-  font-size: 16px;
+  font-size: 15.8px;
+  letter-spacing: 0.1px;
   font-style: normal;
   font-weight: 400;
   line-height: 140%; /* 22.4px */
 }
+.content-right div {
+  margin-top: 8px;
+}
 
 .content-right .name {
   color: #FFF;
-  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: 140%;
@@ -139,9 +147,10 @@ p {
 
 .button {
   display: flex;
-  padding: 13px 28px 12px 14px;
-  align-items: flex-start;
-  gap: 14px;
+  height: 42px;
+  width: 160px;
+  box-sizing: border-box;
+  padding: 15px 0px 12px 17px;
   border-radius: 2px;
   background: var(--red, #DA1617);
   box-shadow: 2px 2px 4px 0px rgba(61, 61, 61, 0.05);
@@ -150,7 +159,13 @@ p {
 }
 
 .button span {
+  width: 90px;
+  margin-left: 15px;
+  position: relative;
+  top: -1px;
+  display: block;
   color: var(--white, #FFF);
+  font-family: Rubik, sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
@@ -158,7 +173,7 @@ p {
 }
 
 .mx-20 {
-  margin: 0 20px;
+  margin: 0 19.5px;
 }
 
 .d-flex {
@@ -168,6 +183,10 @@ p {
 .row {
   flex-direction: row;
   align-items: center;
+}
+
+.star {
+  margin-bottom: 5px;
 }
 
 .background-image {
@@ -212,13 +231,15 @@ picture source, img {
 }
 
 .score-container {
+  width: 100px;
+  height: 30px;
   display: flex;
   flex-direction: row;
   align-items: end;
 }
 
 .container {
-  font-family: Rubik, serif;
+  font-family: Rubik, sans-serif;
   width: 100%;
   font-style: normal;
   font-weight: 500;
@@ -231,9 +252,14 @@ picture source, img {
 .score {
   display: block;
   color: #FFF;
+  font-family: Rubik, sans-serif;
   font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
   line-height: normal;
-  margin-left: 6.5px;
+  margin-left: 6px;
+  position: relative;
+  top: 4px;
 }
 
 .ten {
@@ -244,6 +270,8 @@ picture source, img {
   font-weight: 400;
   line-height: normal;
   margin-left: 5px;
+  position: relative;
+  top: 2px;
 }
 
 .mt-20 {
@@ -256,7 +284,7 @@ picture source, img {
 
 .title {
   color: #FFF;
-  font-family: Krona One,serif;
+  font-family: 'Krona One', sans-serif;
   font-size: 40px;
   font-style: normal;
   font-weight: 400;
@@ -268,26 +296,32 @@ picture source, img {
 
 .year {
   color: #FFF;
+  font-family: Rubik, sans-serif;
+  padding-bottom: 3px;
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
   line-height: 140%; /* 25.2px */
-  padding-bottom: 4px;
+  margin-left: 9px;
 }
 
 .description {
   width: 560px;
   color: #FFF;
-  font-size: 16px;
+  font-family: Rubik, sans-serif;
+  font-size: 15.75px;
   font-style: normal;
+  letter-spacing: 0.1px;
   font-weight: 400;
   line-height: 140%; /* 22.4px */
 }
 
 .genres {
   color: var(--white, #FFF);
-  font-size: 16px;
+  font-family: Rubik, sans-serif;
+  font-size: 15.75px;
   font-style: normal;
+  letter-spacing: 0.2px;
   font-weight: 500;
   line-height: 140%; /* 22.4px */
 }

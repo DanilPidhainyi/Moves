@@ -28,12 +28,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <component :is="isLayout" />
+  <component :is="isLayout"/>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Rubik&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Krona+One&display=swap');
+
 
 body {
   margin: 0;
